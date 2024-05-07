@@ -1,0 +1,7 @@
+ Username:    postgres
+  Password:    N7EEfMbTIXgEhrr
+  Hostname:    fullstackconnection.internal
+  Flycast:     fdaa:9:1ee2:0:1::2
+  Proxy port:  5432
+  Postgres port:  5433
+  Connection string: postgres://postgres:N7EEfMbTIXgEhrr@fullstackconnection.flycast:5432
