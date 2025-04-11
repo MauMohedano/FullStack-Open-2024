@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import Blog from "./Blog";
 import { useState, useRef } from "react";

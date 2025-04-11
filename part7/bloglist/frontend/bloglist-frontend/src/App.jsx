@@ -6,21 +6,27 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
+import Welcome from "./components/Welcome";
 import { showNotification } from "./reducers/notificationreducer";
-import { initializeBlogs, createBlog, likeBlog, deleteBlog } from "./reducers/blogReducer";
+import {
+  initializeBlogs,
+  createBlog,
+  likeBlog,
+  deleteBlog,
+} from "./reducers/blogReducer";
 import { useDispatch, useSelector } from "react-redux";
+
 
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-  
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-   dispatch(initializeBlogs())
+    dispatch(initializeBlogs());
   }, []);
 
   useEffect(() => {
@@ -37,8 +43,8 @@ const App = () => {
   };
 
   const addBlog = (blogObject) => {
-     dispatch(createBlog(blogObject));
-     
+    dispatch(createBlog(blogObject));
+
     messageHandler(
       `A new blog titled ${blogObject.title} by ${blogObject.author} added`,
       "success"
@@ -60,8 +66,8 @@ const App = () => {
       setUsername("");
       setPassword("");
       messageHandler(`Dear ${user.name}, Welcome!`, "success");
-        } catch (exception) {
-          messageHandler("Wrong Credentials", "error");
+    } catch (exception) {
+      messageHandler("Wrong Credentials", "error");
     }
   };
 
@@ -74,19 +80,19 @@ const App = () => {
 
   const updateBlog = async (blog) => {
     try {
-      dispatch(likeBlog(blog))
-      dispatch(showNotification(`Liked ${blog.title}`, 'success'))
+      dispatch(likeBlog(blog));
+      dispatch(showNotification(`Liked ${blog.title}`, "success"));
     } catch (error) {
-      dispatch(showNotification('Failed to like the blog', 'error'))
+      dispatch(showNotification("Failed to like the blog", "error"));
     }
-  }
-  
+  };
+
   const removeBlog = async (id) => {
     try {
       await dispatch(deleteBlog(id)); // esto es tu thunk de Redux
-      dispatch(showNotification('Blog deleted', 'success'));
+      dispatch(showNotification("Blog deleted", "success"));
     } catch (err) {
-      dispatch(showNotification('Remove failed', 'error'));
+      dispatch(showNotification("Remove failed", "error"));
     }
   };
 
@@ -96,7 +102,11 @@ const App = () => {
       <Notification />
 
       {user ? (
-        <BlogForm user={user} removeUser={removeUser} addBlog={addBlog} />
+        <div>
+          <Welcome user={user} removeUser={removeUser} />
+         
+          <BlogForm user={user} removeUser={removeUser} addBlog={addBlog} />
+        </div>
       ) : (
         <LoginForm
           username={username}
