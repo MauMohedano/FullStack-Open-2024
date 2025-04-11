@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 
 const Blog = ({ blog, updateBlog, removeBlog }) => {
@@ -18,14 +19,19 @@ const Blog = ({ blog, updateBlog, removeBlog }) => {
   const handleLike = () => {
     const updatedBlog = {
       ...blog,
-      likes: blog.likes + 1,
+      likes: blog.likes ,
     };
     updateBlog(updatedBlog);
   };
 
-  const handleDelete = () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      removeBlog(blog.id);
+  const handleDelete = async () => {
+    const ok = window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
+    if (!ok) return;
+  
+    try {
+      await removeBlog(blog.id); 
+    } catch (error) {
+      console.error("Error deleting blog:", error);
     }
   };
 

@@ -7,18 +7,20 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import { showNotification } from "./reducers/notificationreducer";
-import { useDispatch } from "react-redux";
+import { initializeBlogs, createBlog, likeBlog, deleteBlog } from "./reducers/blogReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
+  
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+   dispatch(initializeBlogs())
   }, []);
 
   useEffect(() => {
@@ -35,9 +37,8 @@ const App = () => {
   };
 
   const addBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-    });
+     dispatch(createBlog(blogObject));
+     
     messageHandler(
       `A new blog titled ${blogObject.title} by ${blogObject.author} added`,
       "success"
@@ -64,8 +65,6 @@ const App = () => {
     }
   };
 
-
-
   const removeUser = () => {
     setUser(null);
     blogService.setToken(user.token);
@@ -75,22 +74,19 @@ const App = () => {
 
   const updateBlog = async (blog) => {
     try {
-      await blogService.update(blog.id, blog);
-      const blogs = await blogService.getAll();
-      setBlogs(blogs.sort((a, b) => b.likes - a.likes));
-    } catch (exception) {
-      dispatch(showNotification("Like failed", "error"));
+      dispatch(likeBlog(blog))
+      dispatch(showNotification(`Liked ${blog.title}`, 'success'))
+    } catch (error) {
+      dispatch(showNotification('Failed to like the blog', 'error'))
     }
-  };
-
-  const removeBlog = async (blogId) => {
+  }
+  
+  const removeBlog = async (id) => {
     try {
-      await blogService.remove(blogId);
-      const newBlogs = blogs.filter((blog) => blog.id !== blogId);
-      setBlogs(newBlogs);
-      dispatch(showNotification("blog deleted"));
+      await dispatch(deleteBlog(id)); // esto es tu thunk de Redux
+      dispatch(showNotification('Blog deleted', 'success'));
     } catch (err) {
-      dispatch(showNotification("Renmoved failed", "error"));
+      dispatch(showNotification('Remove failed', 'error'));
     }
   };
 
