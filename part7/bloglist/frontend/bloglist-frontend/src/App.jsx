@@ -15,6 +15,8 @@ import {
   deleteBlog,
 } from "./reducers/blogReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { initializeUsers } from "./reducers/userReducer"; 
+import UserList from "./components/UserList"; 
 
 
 const App = () => {
@@ -28,6 +30,9 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs());
   }, []);
+  useEffect(() => {
+    dispatch(initializeUsers()); // Cargar los usuarios cuando la aplicación se inicie
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -127,6 +132,7 @@ const App = () => {
           />
         ))}
       </div>
+      <UserList />
     </div>
   );
 };
